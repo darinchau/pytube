@@ -30,9 +30,13 @@ class Cipher:
         var_regex = re.compile(r"^\w+\W")
         var_match = var_regex.search(self.transform_plan[0])
         if not var_match:
-            raise RegexMatchError(
-                caller="__init__", pattern=var_regex.pattern
-            )
+            # Try again with hotfix
+            var_regex = re.compile(r"^\$*\w+\W")
+            var_match = var_regex.search(self.transform_plan[0])
+            if not var_match:
+                raise RegexMatchError(
+                    caller="__init__", pattern=var_regex.pattern
+                )
         var = var_match.group(0)[:-1]
         self.transform_map = get_transform_map(js, var)
         self.js_func_patterns = [
